@@ -1,0 +1,55 @@
+﻿@model GTCLExam.Models.Designation
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<a id="createModalBtn" type="button" class="btn btn-primary">+</a>
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Create Designation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm" asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="DesignationName" class="control-label"></label>
+                        <input asp-for="DesignationName" class="form-control" />
+                        <span asp-validation-for="DesignationName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('#createModalBtn').click(function () {
+                $('#createModal').modal('show');
+            });
+
+            $('#createForm').submit(function () {
+                $('#createModal').modal('hide');
+            });
+        });
+    </script>
+}

@@ -1,0 +1,135 @@
+﻿@model GTCLExam.ViewModel.VmEmployeeInfo
+@{
+    ViewData["Title"] = "Index";
+    var BV = Model.EmployeeId > 0 ? "Update" : "Add";
+    ViewData["Title"] = "Index";
+    var listEmployee = ViewData["EmployeeList"] as List<GTCLExam.Models.EmployeeInfo>;
+
+}
+
+<div class="container">
+    <form id="form" asp-controller="Employee" asp-action="Index" method="post">
+        <div class="row">
+           
+            <div class="col-6">
+                <input type="hidden" asp-for="EmployeeId"/>
+                <div class="form-group">
+                    <label asp-for="ID">ID</label>
+                    <input type="text" class="form-control" asp-for="ID" placeholder="Enter ID" />
+                    <span asp-validation-for="ID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name">Emp Name</label>
+                    <input type="text" class="form-control" asp-for="Name" placeholder="Enter Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DesignationName"></label>
+                    <select asp-for="DesignationId" asp-items="ViewBag.Designation">--Select list--</select>
+                    <span asp-validation-for="DesignationName" class="text-danger"></span>
+                      
+                    <a id="createModalBtn" data-bs-target="#createModal" asp-controller="Designations" asp-action="Create" type="button" class="btn btn-primary">+</a>
+
+                    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="createModalLabel">Create Designation</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    @await Html.PartialAsync("P", new GTCLExam.Models.Designation())
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                @*  @await Html.PartialAsync("P", new GTCLExam.Models.Designation()) *@
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="GrossSalary">Gross Salary</label>
+                    <input type="number" class="form-control" asp-for="GrossSalary" />
+                    <span asp-validation-for="GrossSalary" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="JoinDate">Join Date</label>
+                    <input type="date" class="form-control" asp-for="JoinDate" />
+                    <span asp-validation-for="JoinDate" class="text-danger"></span>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary">@BV</button>
+                    <a asp-action="Index" class="btn btn-primary">Reset</a>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<br />
+<h1 style="text-align:center">Employee Table</h1>
+<div>
+ 
+    <div>
+        <table class="table table-bordered table-active">
+            <thead>
+                <tr>
+                   <th>ID</th>
+                    <th>Employee Name</th>
+                    <th>Designation</th>
+                    <th>Gross Salary</th>
+                    <th>Join Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in listEmployee )
+                {
+                    <tr>
+                      <td>@item.ID</td>
+                        <td>@item.Name.ToUpper()</td>
+                        <td>@item.Designation.DesignationName</td>
+                        <td>@item.GrossSalary</td>
+                        <td>@item.JoinDate.ToShortDateString()</td>
+                        <td>
+                            <a class="btn btn-primary" asp-action="Index" asp-route-id="@item.EmployeeId">Edit</a>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.EmployeeId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $.ajax({
+        type: "post",
+        url: "/Employee/Create",
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function (data) {
+            alert("Created");
+        },
+        error: function (err) {
+            alert("Error Occurred");
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#createModalBtn').click(function () {
+            $('#createModal').modal('show');
+        });
+
+        $('#createForm').submit(function () {
+            $('#createModal').modal('hide');
+        });
+    });
+</script>
